@@ -57,6 +57,7 @@ def handle_exceptions(exception):  # Receives an exception and does error handli
         print('Buffer error... how on earth did you do this?')
         exit(1)
 
+
 def downgrade(prproj_in, version='1'):  # Main functionality of the program. Downgrades target prproj files.
     """
     Downgrade Adobe Premiere Pro project files.
