@@ -49,7 +49,9 @@ def handle_exceptions(exception):  # Receives an exception and does error handli
         except:
             print('Failed to install lxml parser.Quiting...\n')
             exit(1)
-
+    elif exception == BufferError:
+        print('Buffer error... how on earth did you do this?')
+        exit(1)
 
 def downgrade(prproj_in, version='1'):  # Main functionality of the program. Downgrades target prproj files.
     """
@@ -87,6 +89,7 @@ def downgrade(prproj_in, version='1'):  # Main functionality of the program. Dow
                         print('Downgrade Complete. New file: ' + new_name)  # Change file extension.
     except:
         exception = sys.exc_info()
+        print(str(exception))
         handle_exceptions(exception[0])
 
 
