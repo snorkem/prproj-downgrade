@@ -62,7 +62,7 @@ def downgrade(prproj_in, version='1'):  # Main functionality of the program. Dow
     :param version: Optional. Specify what version to downgrade to. Defaults to version '1'.
     """
     new_version = version
-    new_name = prproj_in + '_DOWNGRADED' + '(v.' + str(new_version) + ').prproj'
+    new_name = (prproj_in + '_DOWNGRADED' + '(v.' + str(new_version) + ').prproj')
     root, ext = os.path.splitext(prproj_in)  # Checking if file extension is correct.
     try:
         if ext != '.prproj':
