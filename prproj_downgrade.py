@@ -49,6 +49,10 @@ def handle_exceptions(exception):  # Receives an exception and does error handli
 
 def project_info(prproj_in):  # Fetches the project version from the target .prproj file.
     try:
+        root, ext = os.path.splitext(prproj_in)  # Checking if file extension is correct.
+        if ext != '.prproj':
+            print('Invalid filetype. Must have valid .prproj extension.')
+            exit(-1)  # If not a valid Adobe Premiere file, exit.
         with gzip.open(prproj_in, 'rt') as f:
             file_content = f.read()  # put file contents into variable as string text
             soup = BeautifulSoup(file_content, 'xml')  # create soup object
