@@ -23,17 +23,6 @@ def install(package):  # Install required modules if not present.
         exit(1)
 
 
-def project_info(prproj_in):  # Fetches the project version from the target .prproj file.
-    with gzip.open(prproj_in, 'rt') as f:
-        file_content = f.read()  # put file contents into variable as string text
-        soup = BeautifulSoup(file_content, 'xml')  # create soup object
-        pp_app_path_list = Path(soup.PresetPath.string).parts
-        pp_app = ''.join(s for s in pp_app_path_list if 'Adobe Premiere Pro' in s and '.' not in s)
-        print('Premiere Pro version: ' + pp_app)
-        print('Current project file version: ' +
-              soup.Project.find_next()['Version'])
-
-
 def handle_exceptions(exception):  # Receives an exception and does error handling.
     if exception == FileNotFoundError:
         print('Invalid file path. Check your path and file name.')
@@ -56,6 +45,21 @@ def handle_exceptions(exception):  # Receives an exception and does error handli
     elif exception == BufferError:
         print('Buffer error... how on earth did you do this?')
         exit(1)
+
+
+def project_info(prproj_in):  # Fetches the project version from the target .prproj file.
+    try:
+        with gzip.open(prproj_in, 'rt') as f:
+            file_content = f.read()  # put file contents into variable as string text
+            soup = BeautifulSoup(file_content, 'xml')  # create soup object
+            pp_app_path_list = Path(soup.PresetPath.string).parts
+            pp_app = ''.join(s for s in pp_app_path_list if 'Adobe Premiere Pro' in s and '.' not in s)
+            print('Premiere Pro version: ' + pp_app)
+            print('Current project file version: ' +
+                  soup.Project.find_next()['Version'])
+    except:
+        exception = sys.exc_info()
+        handle_exceptions(exception[0])
 
 
 def downgrade(prproj_in, version='1'):  # Main functionality of the program. Downgrades target prproj files.
@@ -94,7 +98,6 @@ def downgrade(prproj_in, version='1'):  # Main functionality of the program. Dow
                         print('Downgrade Complete. New file: ' + new_name)  # Change file extension.
     except:
         exception = sys.exc_info()
-        print(str(exception))
         handle_exceptions(exception[0])
 
 
