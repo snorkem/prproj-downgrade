@@ -6,6 +6,7 @@ import sys
 from bs4 import BeautifulSoup
 import fire
 import os
+from pathlib import Path
 # End imports
 
 
@@ -22,11 +23,14 @@ def install(package):  # Install required modules if not present.
         exit(1)
 
 
-def get_project_version(prproj_in):  # Fetches the project version from the target .prproj file.
+def project_info(prproj_in):  # Fetches the project version from the target .prproj file.
     with gzip.open(prproj_in, 'rt') as f:
         file_content = f.read()  # put file contents into variable as string text
         soup = BeautifulSoup(file_content, 'xml')  # create soup object
-        print('Current project version: ' +
+        pp_app_path_list = Path(soup.PresetPath.string).parts
+        pp_app = ''.join(s for s in pp_app_path_list if 'Adobe Premiere Pro' in s and '.' not in s)
+        print('Premiere Pro version: ' + pp_app)
+        print('Current project file version: ' +
               soup.Project.find_next()['Version'])
 
 
