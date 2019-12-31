@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../Drone_Color_Detection/.idea/Drone_Color_Detection.iml" filepath="$PROJECT_DIR$/../Drone_Color_Detection/.idea/Drone_Color_Detection.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../prproj_downgrade/.idea/prproj_downgrade.iml" filepath="$PROJECT_DIR$/../prproj_downgrade/.idea/prproj_downgrade.iml" />
+    </modules>
+  </component>
+</project>
