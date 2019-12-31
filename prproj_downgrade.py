@@ -8,6 +8,7 @@ import fire
 import os
 from pathlib import Path
 # End imports
+packages = ['BeautifulSoup4', 'fire', 'lxml']  # Non-native required packages.
 
 
 def install(package):  # Install required modules if not present.
@@ -29,9 +30,8 @@ def handle_exceptions(exception):  # Receives an exception and does error handli
     elif exception == ModuleNotFoundError:
         print('Missing python module(s)! Trying to automatically install...\n')
         try:
-            install('BeautifulSoup4')
-            install('fire')
-            install('lxml')
+            for package in packages:
+                install(package)
         except:
             print('Failed. Check python environment for missing modules.\n')
             exit(1)
