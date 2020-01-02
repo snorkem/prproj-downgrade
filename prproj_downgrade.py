@@ -46,7 +46,7 @@ def handle_exceptions(exception):  # Receives an exception and does error handli
         print('Buffer error... how on earth did you do this?')
         exit(1)
 
-
+test
 def project_info(prproj_in):  # Fetches the project version from the target .prproj file.
     try:
         root, ext = os.path.splitext(prproj_in)  # Checking if file extension is correct.
