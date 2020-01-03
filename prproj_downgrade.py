@@ -1,24 +1,9 @@
 #!/usr/bin/env python3.8
-try:
-    import gzip
-    import bs4
-    import subprocess
-    import sys
-    from bs4 import BeautifulSoup
-    import fire
-    import os
-    from pathlib import Path
-    # End imports
-    packages = ['BeautifulSoup4', 'fire', 'lxml']  # Non-native required packages.
-except ImportError:
-    print('Non-standard modules not found. Attempting to install...')
-    try:
-        for p in packages:
-            subprocess.check_call([sys.executable, '-m', 'pip', 'install', p])
-    except Exception as e:
-        print('Encountered exception: ' + str(e))
-        print('Error installing modules. Quiting.')
-        exit(1)
+# Simple CLI to downgrade Adobe Premiere Pro project files.
+# by Alex Fichera.
+# --- Begin imports ---
+# Importing sys first to create install function
+import sys
 
 
 def install(package):  # Install required modules if not present.
@@ -34,7 +19,24 @@ def install(package):  # Install required modules if not present.
         exit(1)
 
 
-def handle_exceptions(exception):  # Receives an exception and does error handling.
+try:  # Trying to do the rest of the imports. We will need these all later.
+    import gzip
+    import bs4
+    import subprocess
+    from bs4 import BeautifulSoup
+    import fire
+    import os
+    from pathlib import Path
+    # End imports
+except ImportError:
+    print('Non-standard modules not found. Attempting to install...')
+    packages = ['BeautifulSoup4', 'fire', 'lxml']  # Non-native required packages.
+    for p in packages:
+        install(p)  # calling install function we created earlier...
+# --- End of imports ---
+
+
+def handle_exceptions(exception):  # Receives an exception type and does error handling.
     if exception == FileNotFoundError:
         print('Invalid file path. Check your path and file name.')
     elif exception == ModuleNotFoundError:
