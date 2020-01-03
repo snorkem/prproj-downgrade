@@ -1,14 +1,24 @@
 #!/usr/bin/env python3.8
-import gzip
-import bs4
-import subprocess
-import sys
-from bs4 import BeautifulSoup
-import fire
-import os
-from pathlib import Path
-# End imports
-packages = ['BeautifulSoup4', 'fire', 'lxml']  # Non-native required packages.
+try:
+    import gzip
+    import bs4
+    import subprocess
+    import sys
+    from bs4 import BeautifulSoup
+    import fire
+    import os
+    from pathlib import Path
+    # End imports
+    packages = ['BeautifulSoup4', 'fire', 'lxml']  # Non-native required packages.
+except ImportError:
+    print('Non-standard modules not found. Attempting to install...')
+    try:
+        for p in packages:
+            subprocess.check_call([sys.executable, '-m', 'pip', 'install', p])
+    except Exception as e:
+        print('Encountered exception: ' + str(e))
+        print('Error installing modules. Quiting.')
+        exit(1)
 
 
 def install(package):  # Install required modules if not present.
