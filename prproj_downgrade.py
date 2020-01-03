@@ -38,7 +38,6 @@ try:  # Trying to do the rest of the imports. We will need these all later.
     import fire
     import os
     from pathlib import Path
-    # End imports
 except ImportError:
     print('Non-standard modules not found. Attempting to install...')
     packages = ['BeautifulSoup4', 'fire', 'lxml']  # Non-native required packages.
@@ -71,6 +70,7 @@ def handle_exceptions(exception):  # Receives an exception type and does error h
     else:
         print('An unknown error occured.')
         exit(1)
+
 
 def project_info(prproj_in):  # Fetches the project version from the target .prproj file.
     try:
