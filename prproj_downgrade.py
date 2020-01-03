@@ -5,6 +5,7 @@
 # Importing sys first to create install function
 import sys
 
+
 def help():
     print("DESCRIPTION:\nDowngrade Adobe Premiere Pro project files.\n"
           "Simple script for downgrading Adobe Premiere Pro project files to version 1. Tested on Macs only at this time.\n"
@@ -67,7 +68,9 @@ def handle_exceptions(exception):  # Receives an exception type and does error h
     elif exception == BufferError:
         print('Buffer error... how on earth did you do this?')
         exit(1)
-
+    else:
+        print('An unknown error occured.')
+        exit(1)
 
 def project_info(prproj_in):  # Fetches the project version from the target .prproj file.
     try:
