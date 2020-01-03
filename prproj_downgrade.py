@@ -1,9 +1,19 @@
-!/usr/bin/env python3.8
+# !/usr/bin/env python3.8
 # Simple CLI to downgrade Adobe Premiere Pro project files.
 # by Alex Fichera.
 # --- Begin imports --- #
 # Importing sys first to create install function
 import sys
+
+def help():
+    print("DESCRIPTION:\nDowngrade Adobe Premiere Pro project files.\n"
+          "Simple script for downgrading Adobe Premiere Pro project files to version 1. Tested on Macs only at this time.\n"
+          "Downgraded files should be able to open with any newer version of Premiere.\n"
+          "Author: Alex Fichera\n\n"
+          "USAGE:\n"
+          "prproj_downgrade.py COMMAND --ARGS\n"
+          "Example: prproj_dowgrade.py downgrade <path-to-file> --version=35\n"
+          )
 
 
 def install(package):  # Install required modules if not present.
@@ -82,7 +92,6 @@ def downgrade(prproj_in, version='1'):  # Main functionality of the program. Dow
     """
     Downgrade Adobe Premiere Pro project files.
 
-
     Simple script for downgrading Adobe Premiere Pro project files to version 1. Tested on Macs only at this time.\n
     Downgraded files should be able to open with any newer version of Premiere.
     Author: Alex Fichera
@@ -122,4 +131,5 @@ if __name__ == '__main__':
     fire.Fire({
         'project_info': project_info,
         'downgrade': downgrade,
+        'help': help,
     })
