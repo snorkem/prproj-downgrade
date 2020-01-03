@@ -1,7 +1,7 @@
-#!/usr/bin/env python3.8
+!/usr/bin/env python3.8
 # Simple CLI to downgrade Adobe Premiere Pro project files.
 # by Alex Fichera.
-# --- Begin imports ---
+# --- Begin imports --- #
 # Importing sys first to create install function
 import sys
 
@@ -33,7 +33,7 @@ except ImportError:
     packages = ['BeautifulSoup4', 'fire', 'lxml']  # Non-native required packages.
     for p in packages:
         install(p)  # calling install function we created earlier...
-# --- End of imports ---
+# --- End of imports --- #
 
 
 def handle_exceptions(exception):  # Receives an exception type and does error handling.
@@ -81,6 +81,8 @@ def project_info(prproj_in):  # Fetches the project version from the target .prp
 def downgrade(prproj_in, version='1'):  # Main functionality of the program. Downgrades target prproj files.
     """
     Downgrade Adobe Premiere Pro project files.
+
+
     Simple script for downgrading Adobe Premiere Pro project files to version 1. Tested on Macs only at this time.\n
     Downgraded files should be able to open with any newer version of Premiere.
     Author: Alex Fichera
