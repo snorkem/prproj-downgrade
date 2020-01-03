@@ -81,7 +81,6 @@ def project_info(prproj_in):  # Fetches the project version from the target .prp
 def downgrade(prproj_in, version='1'):  # Main functionality of the program. Downgrades target prproj files.
     """
     Downgrade Adobe Premiere Pro project files.
-
     Simple script for downgrading Adobe Premiere Pro project files to version 1. Tested on Macs only at this time.\n
     Downgraded files should be able to open with any newer version of Premiere.
     Author: Alex Fichera
