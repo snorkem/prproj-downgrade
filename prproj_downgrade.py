@@ -106,4 +106,7 @@ def downgrade(prproj_in, version='1'):  # Main functionality of the program. Dow
 
 
 if __name__ == '__main__':
-    fire.Fire()
+    fire.Fire({
+        'project_info': project_info,
+        'downgrade': downgrade,
+    })
