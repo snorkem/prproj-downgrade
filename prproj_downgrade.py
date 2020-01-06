@@ -4,6 +4,7 @@
 # --- Begin imports --- #
 # Importing sys first to create install function
 import sys
+import subprocess # MOVE SUBPROCESS UP HERE.
 
 
 def help():
@@ -21,6 +22,7 @@ def install(package):  # Install required modules if not present.
     if sys.platform == 'darwin':
         try:
             subprocess.check_call([sys.executable, '-m', 'pip', 'install', package])
+                    # RUN __import__(x) again here on the packages that are installed, or quit and force user to try again.
         except Exception as e:
             print('Encountered exception: ' + str(e))
             print('Error installing modules. Quiting.')
@@ -33,7 +35,6 @@ def install(package):  # Install required modules if not present.
 try:  # Trying to do the rest of the imports. We will need these all later.
     import gzip
     import bs4
-    import subprocess
     from bs4 import BeautifulSoup
     import fire
     import os
