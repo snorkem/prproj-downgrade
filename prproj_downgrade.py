@@ -26,6 +26,7 @@ def install(package):  # Install required modules if not present.
     else:
         print('Error installing modules. Quiting.')
 
+
 try:  # Trying to do the rest of the imports. We will need these all later.
     import gzip
     import bs4
