@@ -1,36 +1,30 @@
 # !/usr/bin/env python3.8
-# Simple CLI to downgrade Adobe Premiere Pro project files.
+"""
+Downgrade Adobe Premiere Pro project files.
+
+Simple script for downgrading Adobe Premiere Pro project files to version 1. Tested on Macs only at this time.\n
+Downgraded files should be able to open with any newer version of Premiere.
+Version: 0.4
 # by Alex Fichera.
+Example Usage: prproj_downgrade.py downgrade <path-to-file>
+"""
+
 # --- Begin imports --- #
 # Importing sys first to create install function
 import sys
-import subprocess # MOVE SUBPROCESS UP HERE.
-
-
-def help():
-    print("DESCRIPTION:\nDowngrade Adobe Premiere Pro project files.\n"
-          "Simple script for downgrading Adobe Premiere Pro project files to version 1. Tested on Macs only at this time.\n"
-          "Downgraded files should be able to open with any newer version of Premiere.\n"
-          "Author: Alex Fichera\n\n"
-          "USAGE:\n"
-          "prproj_downgrade.py COMMAND --ARGS\n"
-          "Example: prproj_dowgrade.py downgrade <path-to-file> --version=35\n"
-          )
+import subprocess
 
 
 def install(package):  # Install required modules if not present.
     if sys.platform == 'darwin':
         try:
             subprocess.check_call([sys.executable, '-m', 'pip', 'install', package])
-                    # RUN __import__(x) again here on the packages that are installed, or quit and force user to try again.
         except Exception as e:
             print('Encountered exception: ' + str(e))
             print('Error installing modules. Quiting.')
     # if sys.platform == 'win32' or sys.platform == 'cygwin':   # Check for windows machine. May be be unnecessary.
     else:
         print('Error installing modules. Quiting.')
-        exit(1)
-
 
 try:  # Trying to do the rest of the imports. We will need these all later.
     import gzip
@@ -38,12 +32,15 @@ try:  # Trying to do the rest of the imports. We will need these all later.
     from bs4 import BeautifulSoup
     import fire
     import os
+    import progress
+    from tqdm import tqdm
     from pathlib import Path
 except ImportError:
     print('Non-standard modules not found. Attempting to install...')
-    packages = ['BeautifulSoup4', 'fire', 'lxml']  # Non-native required packages.
+    packages = ['BeautifulSoup4', 'fire', 'lxml', 'tqdm']  # Non-native required packages.
     for p in packages:
         install(p)  # calling install function we created earlier...
+    print('\n...\nSuccess!\nExiting program. Should now work if you run it again.')
 # --- End of imports --- #
 
 
@@ -57,20 +54,16 @@ def handle_exceptions(exception):  # Receives an exception type and does error h
                 install(package)
         except:
             print('Failed. Check python environment for missing modules.\n')
-            exit(1)
     elif exception == bs4.FeatureNotFound:
         print('Trying to install lxml parser...')
         try:
             install('lxml')
         except:
             print('Failed to install lxml parser.Quiting...\n')
-            exit(1)
     elif exception == BufferError:
         print('Buffer error... how on earth did you do this?')
-        exit(1)
     else:
         print('An unknown error occured.')
-        exit(1)
 
 
 def project_info(prproj_in):  # Fetches the project version from the target .prproj file.
@@ -78,7 +71,7 @@ def project_info(prproj_in):  # Fetches the project version from the target .prp
         root, ext = os.path.splitext(prproj_in)  # Checking if file extension is correct.
         if ext != '.prproj':
             print('Invalid filetype. Must have valid .prproj extension.')
-            exit(-1)  # If not a valid Adobe Premiere file, exit.
+            # If not a valid Adobe Premiere file, exit.
         with gzip.open(prproj_in, 'rt') as f:
             file_content = f.read()  # put file contents into variable as string text
             soup = BeautifulSoup(file_content, 'xml')  # create soup object
@@ -92,39 +85,40 @@ def project_info(prproj_in):  # Fetches the project version from the target .prp
         handle_exceptions(exception[0])
 
 
-def downgrade(prproj_in, version='1'):  # Main functionality of the program. Downgrades target prproj files.
+def downgrade(prproj_in):  # Main functionality of the program. Downgrades target prproj files.
     """
     Downgrade Adobe Premiere Pro project files.
 
     Simple script for downgrading Adobe Premiere Pro project files to version 1. Tested on Macs only at this time.\n
     Downgraded files should be able to open with any newer version of Premiere.
     Author: Alex Fichera
-    Version: 0.3
+    Version: 0.4
     :param prproj_in: path to Premiere Pro project file
-    :param version: Optional. Specify what version to downgrade to. Defaults to version '1'.
     """
-    new_version = version
-    new_name = (prproj_in + '_DOWNGRADED' + '(v.' + str(new_version) + ').prproj')
+    new_version = '1'
     root, ext = os.path.splitext(prproj_in)  # Checking if file extension is correct.
+    new_name = (root + '_DOWNGRADED' + '(v.' + str(new_version) + ').prproj')
+
     try:
         if ext != '.prproj':
             print('Invalid filetype. Must have valid .prproj extension.')
-            exit(-1)  # If not a valid Adobe Premiere file, exit.
+            # If not a valid Adobe Premiere file, exit.
+        elif os.path.exists(new_name):
+            print('Output file already exists at this location. Please move or rename.')
         else:  # Otherwise... continue on to unzip and parse the xml file with BeautifulSoup.
-            with gzip.open(prproj_in, 'rt') as f:
-                file_content = f.read()  # Put file contents into variable as string text
-                soup = BeautifulSoup(file_content, 'xml')  # create soup object
-                print('Current project version: ' +
-                      soup.Project.find_next()['Version'])  # Printing current project version.
-                soup.Project.find_next()['Version'] = new_version  # Change project version number to 1
-                print('Downgraded project version to: ' +
-                      str(soup.Project.find_next()['Version']))  # Print new current version.
-                if os.path.exists(new_name):
-                    print('Output file already exists at this location. Please move or rename.')
-                    exit(-1)
-                else:
+            with tqdm(total=100) as pbar:  # Initialize progress bar.
+                with gzip.open(prproj_in, 'rt') as f:  # Decompress project file and open...
+                    file_content = f.read()  # Put file contents into variable as string text
+                    soup = BeautifulSoup(file_content, 'xml')  # create soup object
+                    print('Current project version: ' +
+                          soup.Project.find_next()['Version'])  # Printing current project version.
+                    soup.Project.find_next()['Version'] = new_version  # Change project version number to 1
+                    print('Downgraded project version to: ' +
+                          str(soup.Project.find_next()['Version']))  # Print new current version.
+                    pbar.update(80)
                     with gzip.open(new_name, 'wt') as f_out:
                         f_out.write(soup.prettify())  # Turn soup object to string for final writing to gzip file.
+                        pbar.update(100)
                         print('Downgrade Complete. New file: ' + new_name)  # Change file extension.
     except:
         exception = sys.exc_info()
