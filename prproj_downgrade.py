@@ -118,7 +118,7 @@ def downgrade(prproj_in):  # Main functionality of the program. Downgrades targe
                           str(soup.Project.find_next()['Version']))  # Print new current version.
                     pbar.update(80)
                     with gzip.open(new_name, 'wt') as f_out:
-                        f_out.write(soup.prettify())  # Turn soup object to string for final writing to gzip file.
+                        f_out.write(str(soup))  # Turn soup object to string for final writing to gzip file.
                         pbar.update(100)
                         print('Downgrade Complete. New file: ' + new_name)  # Change file extension.
     except:
