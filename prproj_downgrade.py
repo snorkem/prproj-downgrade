@@ -53,16 +53,16 @@ except ImportError:
 
 def handle_exceptions(exception):
     print("Full exception: \n" + str(exception)) # Receives an exception type and does error handling.
-    if exception == FileNotFoundError:
+    if exception[0] == FileNotFoundError:
         print('Invalid file path. Check your path and file name.')
-    elif exception == ModuleNotFoundError:
+    elif exception[0] == ModuleNotFoundError:
         print('Missing python module(s)! Trying to automatically install...\n')
         try:
             for package in packages:
                 install(package)
         except:
             print('Failed. Check python environment for missing modules.\n')
-    elif exception == BufferError:
+    elif exception[0] == BufferError:
         print('Buffer error... how on earth did you do this?')
     else:
         print('An unknown error occured.')
