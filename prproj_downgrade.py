@@ -36,6 +36,7 @@ try:  # Trying to do the rest of the imports. We will need these all later.
     import os
     import shutil
     import progress
+    from functools import partial
     import pyfiglet
     from colorama import init
     from termcolor import cprint
@@ -117,7 +118,7 @@ def zip_file(f_in, new_name):
     # uses gzip to zip contents of one file into a new file.
     with open(f_in, 'rb') as f:
         f.seek(0)
-        print('Compressing file. Almost Done!')
+        print('Compressing file. Almost Done...')
         with gzip.open(new_name, 'wb', compresslevel=6) as o:
             shutil.copyfileobj(f, o)
 
@@ -137,19 +138,21 @@ def modify_xml(tmp_file_out, xml_contents):
     lines = []  # create list and read in file line by line.
     with open(tmp_file_out, 'r+') as tmp:
         tmp.write(xml_contents), tmp.seek(0)
-        pbar = tqdm(tmp.readlines()) # Initiallize project bar to the readLines iterator
-        pbar.set_description('Reading Project File...'), print('Changing project version to "1"')
+        pbar = tqdm(tmp.readlines(), unit_scale=True, unit='Lines') # Initiallize project bar to the readLines iterator
+        pbar.set_description('Reading project File...')
         for line in pbar:  # Use tqdm to initialize a progress bar as we write the file line by line.
             if is_project_objectID(line) is True:
+                print('Changing project version to "1"')
                 lines.append(parse_line(line))  # Once we get to the line that starts with project objectID, we replace.
             else:
                 lines.append(line)
         try:
             tmp.seek(0), tmp.truncate(0)
-            with trange(len(lines)) as pbar:
-                for progress in pbar:  # update progress bar
-                    pbar.set_description('Writing out file...')
-                    tmp.write(''.join(lines[progress]))
+            # tmp.writelines(lines)  # without progress bar, write all lines with this.
+            with tqdm(lines, unit_scale=True, unit='Lines') as write_pbar:
+                write_pbar.set_description('Writing new project File...')
+                for line in write_pbar:
+                    tmp.write(''.join(line))
         except:
             exception = sys.exc_info()
             handle_exceptions(exception)
@@ -177,7 +180,6 @@ def downgrade(prproj_in):  # Main functionality of the program. Downgrades targe
         elif os.path.exists(new_name):
             print('Output file already exists at this location. Please move or rename.')
         else:  # Otherwise... continue on to unzip and parse the xml file with BeautifulSoup.
-
             xml_contents = unzip_file(prproj_in, temp_name)
             modify_xml(temp_name, xml_contents)
             zip_file(temp_name, new_name)
