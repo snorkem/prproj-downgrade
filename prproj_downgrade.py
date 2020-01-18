@@ -14,29 +14,12 @@ or:            prproj_downgrade.py info <path-to-file>
 # Importing sys first to create install function
 import sys
 import subprocess
-
-
-def install(package):  # Install required modules if not present.
-    if sys.platform == 'darwin':
-        try:
-            subprocess.check_call([sys.executable, '-m', 'pip', 'install', package])
-        except Exception as e:
-            print('Encountered exception: ' + str(e))
-            print('Error installing modules. Quiting.')
-    # if sys.platform == 'win32' or sys.platform == 'cygwin':   # Check for windows machine. May be be unnecessary.
-    else:
-        print('Error installing modules. Quiting.')
-        exit()
-
-
 try:  # Trying to do the rest of the imports. We will need these all later.
+    import shutil
     import gzip
     import re
     import fire
     import os
-    import shutil
-    import progress
-    from functools import partial
     import pyfiglet
     from colorama import init
     from termcolor import cprint
@@ -47,26 +30,33 @@ except ImportError:
     print('Non-standard modules not found. Attempting to install...')
     packages = ['fire', 'tqdm', 'colorama', 'termcolor', 'pyfiglet']  # Non-native required packages.
     for p in packages:
-        install(p)  # calling install function we created earlier...
+        if sys.platform == 'darwin':
+            try:
+                subprocess.check_call([sys.executable, '-m', 'pip', 'install', p])
+            except Exception as e:
+                print('Encountered exception: ' + str(e))
+                print('Error installing modules. Quiting.')
+        elif sys.platform == 'win32' or sys.platform == 'cygwin':
+            try:
+                subprocess.check_call([sys.executable, '-m', 'pip', 'install', p])  # Check for windows machine. May be be unnecessary.
+            except Exception as e:
+                print('Encountered exception: ' + str(e) + '\nError installing modules. Quiting.')
+        else:
+            print('Error installing modules. Quiting.')
+            exit()
     print('\n...\nSuccess!\nExiting program. Should now work if you run it again.')
 # --- End of imports --- #
 
 
-def handle_exceptions(exception):
-    print("Full exception: \n" + str(exception)) # Receives an exception type and does error handling.
+def handle_exceptions(exception):  # Receives an exception type and does error handling.
     if exception[0] == FileNotFoundError:
         print('Invalid file path. Check your path and file name.')
-    elif exception[0] == ModuleNotFoundError:
-        print('Missing python module(s)! Trying to automatically install...\n')
-        try:
-            for package in packages:
-                install(package)
-        except:
-            print('Failed. Check python environment for missing modules.\n')
     elif exception[0] == BufferError:
         print('Buffer error... how on earth did you do this?')
     else:
         print('An unknown error occured.')
+        print("Full exception: \n" + str(exception) +
+              '\nTraceback Line: ' + str(exception[-1].tb_lineno))
 
 
 def welcome():
@@ -172,6 +162,7 @@ def downgrade(prproj_in):  # Main functionality of the program. Downgrades targe
     root, ext = os.path.splitext(prproj_in)  # Checking if file extension is correct.
     new_name = (root + '_DOWNGRADED' + '(v.' + str(new_version) + ').prproj')
     temp_name = os.path.split(root)[0] + '/prproj_downgrade.tmp'
+
     try:
         welcome()
         if ext != '.prproj':
