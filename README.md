@@ -8,5 +8,6 @@ by Alex Fichera.
 
 # Usage
 prproj_downgrade.py downgrade <path-to-file>
+  
 or:
 prproj_downgrade.py info <path-to-file>
