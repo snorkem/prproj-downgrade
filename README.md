@@ -7,8 +7,8 @@ The script should install any non-standard modules automatically, if not detecte
 by Alex Fichera.
 
 # Usage
-prproj_downgrade.py downgrade <path-to-file>
+prproj_downgrade.py downgrade path-to-file
   
 or:
 
-prproj_downgrade.py info <path-to-file>
+prproj_downgrade.py info path-to-file
