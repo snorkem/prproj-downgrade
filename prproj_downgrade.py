@@ -4,7 +4,7 @@ Downgrade Adobe Premiere Pro project files.
 
 Simple script for downgrading Adobe Premiere Pro project files to version 1. Tested on Macs only at this time.\n
 Downgraded files should be able to open with any newer version of Premiere.
-Version: 0.4
+Version: 0.8
 # by Alex Fichera.
 Example Usage: prproj_downgrade.py downgrade <path-to-file>
 or:            prproj_downgrade.py info <path-to-file>
