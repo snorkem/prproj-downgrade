@@ -12,3 +12,7 @@ prproj_downgrade.py downgrade path-to-file
 or:
 
 prproj_downgrade.py info path-to-file
+
+or:
+
+prproj_downgrade.py watch path-to-watch-directory path-to-output-directory
