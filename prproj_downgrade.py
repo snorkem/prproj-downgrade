@@ -67,15 +67,10 @@ class MyEventHandler(FileSystemEventHandler):
             exit()
 
     def on_modified(self, event):
-        files = [f for f in os.listdir(self.watch_dir) if (os.path.isfile(os.path.join(self.watch_dir, f)))
+        files = [(self.watch_dir + f) for f in os.listdir(self.watch_dir) if (os.path.isfile(os.path.join(self.watch_dir, f)))
                  if (os.path.join(self.watch_dir, f).endswith('.prproj'))]
-        files[:] = [self.watch_dir + file for file in files]
         if len(files) > 0:
-            print(files)
             latest_file = max(files, key=os.path.getmtime)
-            print('test ' + latest_file)
-            '''for file in files:
-                downgrade(file, output_dir=self.output_dir)'''
             if latest_file:
                 downgrade(latest_file, output_dir=self.output_dir)
                 for file in files:
