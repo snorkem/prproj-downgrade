@@ -71,10 +71,11 @@ class MyEventHandler(FileSystemEventHandler):
                  if (os.path.join(self.watch_dir, f).endswith('.prproj'))]
         if len(files) > 0:
             latest_file = max(files, key=os.path.getmtime)
+            print('latest file is: ' + latest_file)
             if latest_file:
+                print(latest_file)
                 downgrade(latest_file, output_dir=self.output_dir)
-                for file in files:
-                    os.rename(file, file + '.processed')
+                os.rename(latest_file, latest_file + '.processed')
                 latest_file = None
         else:
             return
