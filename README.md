@@ -7,12 +7,12 @@ The script should install any non-standard python modules automatically using 'p
 by Alex Fichera.
 
 # Usage
-prproj_downgrade.py downgrade <path-to-file>
+prproj_downgrade.py downgrade path-to-file
   
 or:
 
-prproj_downgrade.py info <path-to-file>
+prproj_downgrade.py info path-to-file
 
 or:
 
-prproj_downgrade.py watch <path-to-watch-directory> <path-to-output-directory>
+prproj_downgrade.py watch <path-to-watch-directory> path-to-output-directory
