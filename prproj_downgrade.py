@@ -168,7 +168,7 @@ def downgrade(prproj_in, output_dir=''):  # Main functionality of the program. D
     Simple script for downgrading Adobe Premiere Pro project files to version 1. Tested on Macs only at this time.\n
     Downgraded files should be able to open with any newer version of Premiere.
     Author: Alex Fichera
-    Version: 0.8
+    Version: 1
     :param prproj_in: path to Premiere Pro project file
     :param output_dir: optional, destination output directory
     """
