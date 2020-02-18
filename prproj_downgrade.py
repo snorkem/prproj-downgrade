@@ -4,10 +4,11 @@ Downgrade Adobe Premiere Pro project files.
 
 Simple script for downgrading Adobe Premiere Pro project files to version 1. Tested on Macs only at this time.\n
 Downgraded files should be able to open with any newer version of Premiere.
-Version: 1.0
+Version: 1.1
 # by Alex Fichera.
 Example Usage: prproj_downgrade.py downgrade <path-to-file>
 or:            prproj_downgrade.py info <path-to-file>
+or:            prproj_downgrade.py watch <path-to-watch-directory> <path-to-output-directory>
 """
 
 # --- Begin imports --- #
@@ -156,27 +157,33 @@ def modify_xml(tmp_file_out, xml_contents):
                 write_pbar.set_description('Writing new project File...')
                 for line in write_pbar:
                     tmp.write(''.join(line))
+        except SystemExit:
+            print('Quiting. Feel free to try again!')
         except:
             exception = sys.exc_info()
             handle_exceptions(exception)
 
 
-def downgrade(prproj_in, output_dir=''):  # Main functionality of the program. Downgrades target prproj files.
+def downgrade(prproj_in: str,
+              output_dir: str = '',
+              suffix: str = '_DOWNGRADED'):  # Main functionality of the program. Downgrades target prproj files.
     """
     Downgrade Adobe Premiere Pro project files.
 
     Simple script for downgrading Adobe Premiere Pro project files to version 1. Tested on Macs only at this time.\n
     Downgraded files should be able to open with any newer version of Premiere.
     Author: Alex Fichera
-    Version: 1.0
+    Version: 1.1
     :param prproj_in: path to Premiere Pro project file
     :param output_dir: optional, destination output directory
+    :param suffix: Optional, specify the suffix appended to new project file. Usage: --suffix=YOUR_SUFFIX.
     """
     new_version = '1'
     root, ext = os.path.splitext(prproj_in)  # Checking if file extension is correct.
     src_file_name = os.path.basename(root)
-    new_name = ((root if output_dir == '' else output_dir) + src_file_name +
-                '_DOWNGRADED' + '(v.' + str(new_version) + ').prproj')
+    print('root is: ' + os.path.split(root)[0])
+    new_name = ((os.path.split(root)[0] + '/' if output_dir == '' else output_dir + '/') + src_file_name +
+                str(suffix) + '(v.' + str(new_version) + ').prproj')
     print('new_name is: {new_name}'.format(new_name=new_name))
     temp_name = os.path.split(root)[0] + '/prproj_downgrade.tmp'
 
@@ -195,17 +202,22 @@ def downgrade(prproj_in, output_dir=''):  # Main functionality of the program. D
             print('Cleaning up temp file {temp_name}...'.format(temp_name=temp_name))
             os.remove(temp_name)
             print('Success! Project file downgraded at: ' + new_name)
+    except SystemExit:
+        print('Quiting. Feel free to try again!')
     except:
         exception = sys.exc_info()
         handle_exceptions(exception)
 
 
 def info(prproj_in):  # Fetches the project version from the target .prproj file.
+    """
+    :param prproj_in: path to Premiere Pro project file
+    """
     try:
         root, ext = os.path.splitext(prproj_in)  # Checking if file extension is correct.
         if ext != '.prproj':
             print('Invalid filetype. Must have valid .prproj extension.')  # If not a valid Adobe Premiere file, exit.
-            exit()
+            sys.exit()
         with gzip.open(prproj_in, 'rt') as f:
             search_string = '<PresetPath>/Applications/'
             build_line_search = '<MZ.BuildVersion.Created>'
@@ -216,9 +228,12 @@ def info(prproj_in):  # Fetches the project version from the target .prproj file
                 elif build_line_search in line:
                     build_version = re.search(r'\d\d[\.]\d[.]\d', line)
             if version and build_version:
-                print('Project Created in: ' + version.group() + '\n' + 'Build Version: ' + build_version.group())
+                print('Project Created in: {version}\n'
+                      'Build Version: {build}'.format(version=version.group(), build=build_version.group()))
             else:
                 print('Project info not found.')
+    except SystemExit:
+        print('Quiting. Feel free to try again!')
     except:
         exception = sys.exc_info()
         handle_exceptions(exception)
@@ -241,6 +256,8 @@ def watch(watch_dir, output_dir):
                 bar.next()
         while True:
             time.sleep(2)
+    except SystemExit:
+        print('Quiting. Feel free to try again!')
     except KeyboardInterrupt:
         observer.stop()
         observer.join()
