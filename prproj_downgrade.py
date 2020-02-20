@@ -181,7 +181,6 @@ def downgrade(prproj_in: str,
     new_version = '1'
     root, ext = os.path.splitext(prproj_in)  # Checking if file extension is correct.
     src_file_name = os.path.basename(root)
-    print('root is: ' + os.path.split(root)[0])
     new_name = ((os.path.split(root)[0] + '/' if output_dir == '' else output_dir + '/') + src_file_name +
                 str(suffix) + '(v.' + str(new_version) + ').prproj')
     print('new_name is: {new_name}'.format(new_name=new_name))
