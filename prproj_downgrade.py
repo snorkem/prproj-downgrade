@@ -61,7 +61,10 @@ class MyEventHandler(FileSystemEventHandler):
         self.watch_dir = watch_dir
         self.output_dir = output_dir
 
-        if os.path.exists(self.output_dir) is False:
+        if os.path.exists(self.output_dir):
+            print('Output directory exists. Downgraded files will appear there.')
+        elif os.path.exists(self.output_dir) is False:
+            print('Output directory does not exist. Creating: {dir}'.format(dir=self.output_dir))
             os.mkdir(self.output_dir)
         elif os.path.exists(self.watch_dir) is False:
             print('Watch directory not found. Check your path.')
